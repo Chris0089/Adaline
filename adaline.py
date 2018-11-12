@@ -1,3 +1,8 @@
+"""
+The input values files represent each values the input of the same neuron can have, 
+therefore is just one weight per column. (not per column AND per row).
+Each desired column is an independent neuron. Therefore one bias per desired column.
+"""
 import random
 import csv
 
