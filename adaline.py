@@ -4,7 +4,7 @@ therefore is just one weight per column. (not per column AND per row).
 Each desired column is an independent neuron. Therefore one bias per desired column.
 """
 import random
-import csv
+import numpy as np
 
 INPUTFILE = 'input-values.txt'
 DESIREDFILE = 'desired-values.txt'
@@ -94,26 +94,28 @@ class Adaline(DataAccessObject):
         self.iteration += 1
 
     def activation_function(self, value):
-        if value <= 0:
-            return 0.0
-        else:
-            return 1.0
+        output = 1 / (1 + np.exp(value * -1))
+        return output
 
     def is_the_desired_output(self):
-        if self.output == self.desiredOutput:
-            return True
-        else:
-            return False
+        for neuron in range(0, self.desiredColumns):
+            for output in range(0, self.inputRows):
+                
+                if ((self.output[neuron][output] - self.desiredOutput[neuron][output] <= ERROR) or (self.desiredOutput[neuron][output] - self.output[neuron][output] <= ERROR)):
+                    return True
+                else:
+                    return False
 
     def training(self):
         for column in range(0, self.desiredColumns):
             for row in range(0,self.inputRows):
                 if self.desiredOutput[column][row] != self.output[column][row]:
                     error = self.desiredOutput[column][row] - self.output[column][row]
-                    self.bias[column] = self.bias[column] + (ETA * error)
-                    for columnInput in range(0, self.inputColumns):
-                        self.weightData[column][columnInput] = self.weightData[column][columnInput] +\
-                                                       (ETA * error * self.inputData[columnInput][row])
+                    if error > ERROR:
+                        self.bias[column] = self.bias[column] + (ETA * error * self.output[column][row] *(1 - self.output[column][row])) 
+                        for columnInput in range(0, self.inputColumns):
+                            self.weightData[column][columnInput] = self.weightData[column][columnInput] +\
+                                                        (ETA * error * self.inputData[columnInput][row] ** self.output[column][row] *(1 - self.output[column][row])) 
 
     def main_algorithm(self):
         self.calculate_output()
