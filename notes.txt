@@ -1,0 +1,60 @@
+/*
+Command line to install numpy and matplotlib:
+
+python -m pip install --user numpy scipy matplotlib
+
+also scientific libs: numpy scipy matplotlib ipython jupyter pandas sympy nose
+*/
+
+####  Adaline ###
+	Is a linear decision boundary.
+	Stochastic gradient descent learning.
+	Continuous response.
+	Weight training: W * eta * (d-y) * x
+	
+	## Gradient descent ##
+		Iterative Optimization Algorithm
+		Used to find local minimum of a function
+		
+		If the multi-variable function is DEFINED and DIFFERENTIABLE 
+		
+
+		
+### Regression ###
+	Statistical modeling.
+	Estimates the relationship among variables.
+	Used for prediction and forecasting.
+	Overlapping with machine learning.
+	
+	Common paramethric methods:
+		> Linear regression.
+		> Ordinary least Squares.
+	These've FINITE UNKNOWN parameters estimated from the data.
+		
+		# Linear regression #
+			Single Linear Regression: One variable
+			
+			 * Conditional expectation  or Conditional mean*
+				Probability theory field.
+				One value will take some "average" if some set of conditions occur.
+				When the random variable is defined over a discrete probability space, the conditions are a partition of this probability space.
+				
+				Generalizes to any probability space using measure theory.
+				
+				
+				
+				
+		
+	
+	## Nonparametric regression. ##
+		These NEED larger samples because their model structure must be developed by the data.
+		
+		Some methods:
+			> Gaussian process regression or Kriging.
+			> Kernel regression.
+			
+			
+TO LOOK OUT:
+	Measure (Mathematics)
+	Least Squares
+	Capital Asset Pricing Model

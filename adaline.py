@@ -3,6 +3,7 @@ import csv
 
 INPUTFILE = 'input-values.txt'
 DESIREDFILE = 'desired-values.txt'
+ERROR = 0.1
 ETA = 0.1
 BOTTOM_LIMIT = -1
 TOP_LIMIT = 1
@@ -38,12 +39,12 @@ class DataAccessObject:
                 self.desiredOutput[value].append(float(fields[value]))
 
 
-class Perceptron(DataAccessObject):
+class Adaline(DataAccessObject):
     inputData = []
-    inputQuantity = None
-    inputSize = None
+    inputColumns = None
+    inputRows = None
     weightData = []
-    threshold = []  # bias
+    bias = []  # bias
     output = []
     desiredOutput = []
     desiredColumns = None
@@ -55,8 +56,8 @@ class Perceptron(DataAccessObject):
     def __init__(self):
         self.inputData = DataAccessObject.inputData.copy()
         self.desiredOutput = DataAccessObject.desiredOutput.copy()
-        self.inputQuantity = len(self.inputData)
-        self.inputSize = len(self.inputData[0])
+        self.inputColumns = len(self.inputData)
+        self.inputRows = len(self.inputData[0])
         self.desiredColumns=len(self.desiredOutput)
         self.desiredRows = len(self.desiredOutput[0])
         self.generate_random_values()
@@ -65,14 +66,9 @@ class Perceptron(DataAccessObject):
     def generate_random_values(self):
         for column in range(0, self.desiredColumns):
             self.weightData.append([])
-            self.threshold.append([])
-            for value in range(0, self.inputQuantity):
-                self.weightData[column].append([])
-            for value in range(0, self.inputQuantity):
-                for inputSize in range(0, self.inputSize):
-                    self.weightData[column][value].append(random.uniform(BOTTOM_LIMIT, TOP_LIMIT))
-            for size in range(0, self.inputSize):
-                self.threshold[column].append(random.uniform(BOTTOM_LIMIT, TOP_LIMIT))
+            self.bias.append(random.uniform(BOTTOM_LIMIT, TOP_LIMIT))
+            for value in range(0, self.inputColumns):
+                self.weightData[column].append(random.uniform(BOTTOM_LIMIT, TOP_LIMIT))                
 
     def calculate_output(self):
         self.output = []
@@ -82,13 +78,13 @@ class Perceptron(DataAccessObject):
             self.output.append([])
             self.summation.append([])
             self.v.append([])
-            for row in range(0, self.inputSize):
-                self.summation[column].append(0)
-                self.v[column].append(0)
-                for columnInput in range(0,self.inputQuantity):
+            for row in range(0, self.inputRows):
+                self.summation[column].append(0) #Start summation in 0 
+                self.v[column].append(0) 
+                for columnInput in range(0,self.inputColumns):
                     self.summation[column][row] += \
-                        self.inputData[columnInput][row] * self.weightData[column][columnInput][row]
-                self.v[column][row] = self.summation[column][row] + self.threshold[column][row] #changed, summed bias
+                        self.inputData[columnInput][row] * self.weightData[column][columnInput]
+                self.v[column][row] = self.summation[column][row] + self.bias[column] #changed, summed bias
                 self.output[column].append(self.activation_function(self.v[column][row]))
         self.iteration += 1
 
@@ -106,12 +102,12 @@ class Perceptron(DataAccessObject):
 
     def training(self):
         for column in range(0, self.desiredColumns):
-            for row in range(0,self.inputSize):
+            for row in range(0,self.inputRows):
                 if self.desiredOutput[column][row] != self.output[column][row]:
                     error = self.desiredOutput[column][row] - self.output[column][row]
-                    self.threshold[column][row] = self.threshold[column][row] + (ETA * error)
-                    for columnInput in range(0, self.inputQuantity):
-                        self.weightData[column][columnInput][row] = self.weightData[column][columnInput][row] +\
+                    self.bias[column] = self.bias[column] + (ETA * error)
+                    for columnInput in range(0, self.inputColumns):
+                        self.weightData[column][columnInput] = self.weightData[column][columnInput] +\
                                                        (ETA * error * self.inputData[columnInput][row])
 
     def main_algorithm(self):
@@ -131,8 +127,9 @@ class Perceptron(DataAccessObject):
         print(self.desiredOutput)
         print("Salidas:")
         print(self.output)
+        print(self.bias)
 
 
 dao = DataAccessObject()
-perceptron = Perceptron()
+adaline = Adaline()
 
