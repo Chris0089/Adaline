@@ -12,6 +12,8 @@ Tested:
 """
 import random
 import numpy as np
+import pylab
+import matplotlib.pyplot as plt
 
 INPUTFILE = 'input-values.txt'
 DESIREDFILE = 'desired-values.txt'
@@ -110,7 +112,6 @@ class Adaline(DataAccessObject):
         for column in range(0, self.desiredColumns):
             for row in range(0,self.inputRows):
                 error = self.desiredOutput[column][row] - self.output[column][row]
-                #print(str(error))
                 if abs(error) <= ERROR:
                     pass
                 else:
@@ -121,14 +122,36 @@ class Adaline(DataAccessObject):
         for column in range(0, self.desiredColumns):
             for row in range(0,self.inputRows):
                 error = self.desiredOutput[column][row] - self.output[column][row]
-                print(str(error))
                 if abs(error) > ERROR:
-                    #print('Error' + str(error))
                     self.bias[column] = self.bias[column] + (ETA * error * self.output[column][row] *(1 - self.output[column][row])) 
                     for columnInput in range(0, self.inputColumns):
                         self.weightData[column][columnInput] = self.weightData[column][columnInput] +\
                                                     (ETA * error * self.inputData[columnInput][row] * self.output[column][row] *(1 - self.output[column][row])) 
                
+    def print_plot(self):
+        for column in  range(0, self.desiredColumns):
+            #x2 = (self.bias[column] / self.weightData[column][1] - self.weightData[column][0]/ self.weightData[column][1] * self.inputData[0][0])
+            x = np.linspace(-2, 2, 4)
+            formulaPlot = (-1 * self.bias[column] / self.weightData[column][1]) - (self.weightData[column][0] / self.weightData[column][1] * x)
+            if self.desiredOutput[column][0] == 0:
+                plt.plot(0,0, 'x', color = 'red')
+            else:
+                plt.plot(0,0, 'ro', color = 'green')
+            if self.desiredOutput[column][1] == 0:
+                plt.plot(0,1, 'x', color = 'red')
+            else:
+                plt.plot(0,1, 'ro', color = 'green')
+            if self.desiredOutput[column][2] == 0:
+                plt.plot(1,0, 'x', color = 'red')
+            else:
+                plt.plot(1,0, 'ro', color = 'green')
+            if self.desiredOutput[column][3] == 0 :
+                plt.plot(1,1, 'x', color = 'red')
+            else:
+                plt.plot(1,1, 'ro', color = 'green')
+            pylab.plot(x, formulaPlot, color = "blue")
+            pylab.show()
+
     def main_algorithm(self):
         self.calculate_output()
         self.print_data()
@@ -138,6 +161,8 @@ class Adaline(DataAccessObject):
             self.calculate_output()
             self.print_data()
         print("Finished")
+        self.print_plot()
+        
 
     def print_data(self):
         print("Iteraciones = " + str(self.iteration))
@@ -146,7 +171,6 @@ class Adaline(DataAccessObject):
         print(self.desiredOutput)
         print("Salidas:")
         print(self.output)
-        print(self.bias)
 
 
 dao = DataAccessObject()
