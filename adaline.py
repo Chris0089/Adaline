@@ -2,6 +2,13 @@
 The input values files represent each values the input of the same neuron can have, 
 therefore is just one weight per column. (not per column AND per row).
 Each desired column is an independent neuron. Therefore one bias per desired column.
+Tested:
+    Error 0.01 -> 76,215 iterations
+    Error 0.02 -> ~ 19,000 iterations
+    Error 0.03 -> ~ 9,000 iterations
+    Error 0.04 -> ~ 5,000 iterations
+    Error 0.05 -> ~ 3,000 iterations
+    Error 0.1 -> ~ 1,000 iterations
 """
 import random
 import numpy as np
@@ -9,7 +16,7 @@ import numpy as np
 INPUTFILE = 'input-values.txt'
 DESIREDFILE = 'desired-values.txt'
 ERROR = 0.1
-ETA = 0.1
+ETA = 0.4
 BOTTOM_LIMIT = -1
 TOP_LIMIT = 1
 
@@ -57,6 +64,8 @@ class Adaline(DataAccessObject):
     v = []
     summation = []
     iteration = 0
+    errorAsc = 0
+    errorDesc = 0
 
     def __init__(self):
         self.inputData = DataAccessObject.inputData.copy()
@@ -98,25 +107,28 @@ class Adaline(DataAccessObject):
         return output
 
     def is_the_desired_output(self):
-        for neuron in range(0, self.desiredColumns):
-            for output in range(0, self.inputRows):
-                
-                if ((self.output[neuron][output] - self.desiredOutput[neuron][output] <= ERROR) or (self.desiredOutput[neuron][output] - self.output[neuron][output] <= ERROR)):
-                    return True
+        for column in range(0, self.desiredColumns):
+            for row in range(0,self.inputRows):
+                error = self.desiredOutput[column][row] - self.output[column][row]
+                #print(str(error))
+                if abs(error) <= ERROR:
+                    pass
                 else:
                     return False
+        return True
 
     def training(self):
         for column in range(0, self.desiredColumns):
             for row in range(0,self.inputRows):
-                if self.desiredOutput[column][row] != self.output[column][row]:
-                    error = self.desiredOutput[column][row] - self.output[column][row]
-                    if error > ERROR:
-                        self.bias[column] = self.bias[column] + (ETA * error * self.output[column][row] *(1 - self.output[column][row])) 
-                        for columnInput in range(0, self.inputColumns):
-                            self.weightData[column][columnInput] = self.weightData[column][columnInput] +\
-                                                        (ETA * error * self.inputData[columnInput][row] ** self.output[column][row] *(1 - self.output[column][row])) 
-
+                error = self.desiredOutput[column][row] - self.output[column][row]
+                print(str(error))
+                if abs(error) > ERROR:
+                    #print('Error' + str(error))
+                    self.bias[column] = self.bias[column] + (ETA * error * self.output[column][row] *(1 - self.output[column][row])) 
+                    for columnInput in range(0, self.inputColumns):
+                        self.weightData[column][columnInput] = self.weightData[column][columnInput] +\
+                                                    (ETA * error * self.inputData[columnInput][row] * self.output[column][row] *(1 - self.output[column][row])) 
+               
     def main_algorithm(self):
         self.calculate_output()
         self.print_data()
