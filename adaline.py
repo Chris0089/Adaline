@@ -14,6 +14,7 @@ import random
 import numpy as np
 import pylab
 import matplotlib.pyplot as plt
+from itertools import chain
 
 INPUTFILE = 'input-values.txt'
 DESIREDFILE = 'desired-values.txt'
@@ -131,7 +132,9 @@ class Adaline(DataAccessObject):
     def print_plot(self):
         for column in  range(0, self.desiredColumns):
             #x2 = (self.bias[column] / self.weightData[column][1] - self.weightData[column][0]/ self.weightData[column][1] * self.inputData[0][0])
-            x = np.linspace(-2, 2, 4)
+            minX = min(chain.from_iterable(self.inputData)) - 2
+            maxX = max(chain.from_iterable(self.inputData)) + 2
+            x = np.linspace(minX, maxX, 4)
             formulaPlot = (-1 * self.bias[column] / self.weightData[column][1]) - (self.weightData[column][0] / self.weightData[column][1] * x)
             if self.desiredOutput[column][0] == 0:
                 plt.plot(0,0, 'x', color = 'red')
